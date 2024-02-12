@@ -1,10 +1,11 @@
 const vscode = require('vscode');
+
 let activeEditor = vscode.window.activeTextEditor;
-console.log(`activeEditor: ${activeEditor}`);
 
 function activate(context) {
     console.log('Congratulations, your extension "vsc-plugin-demo" is now active!');
 
+    // 注册命令
     let disposable = vscode.commands.registerCommand('extension.showHighlighterWidget', function() {
         // 创建一个输入框悬浮窗口
         const panel = vscode.window.createWebviewPanel(
@@ -15,8 +16,7 @@ function activate(context) {
                 enableScripts: true
             }
         );
-        activeEditor = vscode.window.activeTextEditor;
-        console.log(`activeEditor: ${activeEditor}`);
+
         // 设置悬浮窗口中的 HTML 内容
         panel.webview.html = getHTMLContent(panel);
 
@@ -26,10 +26,6 @@ function activate(context) {
                 const { stringA, stringB } = message;
                 highlightStrings(stringA, stringB);
             }
-            /*while (true) {
-                const { stringA, stringB } = message;
-                highlightStrings(stringA, stringB);
-            }*/
         });
     });
 
@@ -80,14 +76,13 @@ function highlightStrings(stringA, stringB) {
     // 实现高亮字符串的逻辑
     console.log(`Highlighting String A: ${stringA}`);
     console.log(`Highlighting String B: ${stringB}`);
-    // const editor = vscode.window.activeTextEditor;
-    editor = activeEditor
+
+    const editor = activeEditor;
     if (editor) {
         const document = editor.document;
         const text = document.getText();
         const rangesA = findStringRanges(text, stringA);
         const rangesB = findStringRanges(text, stringB);
-        console.log(`text: ${text})`);
 
         const decorationTypeA = vscode.window.createTextEditorDecorationType({
             backgroundColor: 'yellow'
@@ -96,19 +91,23 @@ function highlightStrings(stringA, stringB) {
             backgroundColor: 'blue'
         });
 
+        console.log(`editor: ${editor}`);
         editor.setDecorations(decorationTypeA, rangesA);
         editor.setDecorations(decorationTypeB, rangesB);
+    } else {
+        vscode.window.showErrorMessage('No active editor found.');
     }
 }
 
 function findStringRanges(text, searchString) {
     const ranges = [];
     const regex = new RegExp(searchString, 'g');
+    const document = activeEditor.document;
     let match;
     while (match = regex.exec(text)) {
-        const startPos = match.index;
-        const endPos = match.index + searchString.length;
-        const range = new vscode.Range(document.positionAt(startPos), document.positionAt(endPos));
+        let startPos = document.positionAt(match.index);
+        let endPos = document.positionAt(match.index + match[0].length);
+        let range = new vscode.Range(startPos, endPos);
         ranges.push(range);
     }
     return ranges;
