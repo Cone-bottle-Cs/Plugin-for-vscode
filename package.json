@@ -1,0 +1,23 @@
+{
+    "name": "vsc-plugin-demo",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.47.3"
+    },
+    "activationEvents": [
+        "onStartupFinished"
+    ],
+    "main": "./ext.js",
+    "contributes": {
+        "commands": [{
+            "command": "extension.showHighlighterWidget",
+            "title": "Show Highlighter GUI"
+        }],
+        "keybindings": [{
+            "command": "extension.showHighlighterWidget",
+            "key": "ctrl+shift+h",
+            "mac": "cmd+shift+h",
+            "when": "editorTextFocus"
+        }]
+    }
+}
