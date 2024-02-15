@@ -76,6 +76,7 @@ function highlightStrings(stringA, stringB) {
     // 实现高亮字符串的逻辑
     console.log(`Highlighting String A: ${stringA}`);
     console.log(`Highlighting String B: ${stringB}`);
+    console.log(`activeEditor: ${activeEditor}`);
 
     const editor = activeEditor;
     if (editor) {
